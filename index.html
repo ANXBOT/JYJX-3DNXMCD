@@ -6,8 +6,8 @@
 <title>机元镜像 · 三维模型库</title>
 <style>
   :root{
-    --bg:#0d0f14; --bg2:#11141b; --card:#171b24; --card2:#1d222d;
-    --line:#262c38; --text:#e6e9ef; --muted:#8b93a3; --accent:#38bdf8; --accent2:#f59e0b;
+    --bg:#f7f8fb; --bg2:#eef1f6; --card:#ffffff; --card2:#fbfcfe;
+    --line:#e4e8ef; --text:#1f2733; --muted:#69738a; --accent:#0284c7; --accent2:#d97706;
     --radius:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -15,9 +15,9 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
     color:var(--text);
     background:
-      radial-gradient(1200px 600px at 80% -10%,rgba(56,189,248,.10),transparent 60%),
-      radial-gradient(900px 500px at -10% 10%,rgba(245,158,11,.08),transparent 55%),
-      linear-gradient(180deg,var(--bg),var(--bg2));
+      radial-gradient(1200px 600px at 80% -10%,rgba(2,132,199,.05),transparent 60%),
+      radial-gradient(900px 500px at -10% 10%,rgba(245,158,11,.05),transparent 55%),
+      linear-gradient(180deg,#ffffff,var(--bg2));
     min-height:100vh; padding:0 0 56px;
   }
   header{
@@ -26,16 +26,16 @@
   }
   .brand{display:flex; align-items:center; gap:14px}
   .logo{
-    width:46px;height:46px;border-radius:12px;flex:none;
-    background:linear-gradient(135deg,var(--accent),#6366f1);
-    display:grid;place-items:center;font-weight:800;font-size:20px;color:#04121f;
-    box-shadow:0 6px 20px rgba(56,189,248,.35);
+    width:46px;height:46px;border-radius:12px;flex:none;overflow:hidden;
+    background:#fff;border:1px solid var(--line);
+    box-shadow:0 4px 14px rgba(15,23,42,.10);
   }
+  .logo img{width:100%;height:100%;object-fit:cover;display:block}
   h1{font-size:26px;letter-spacing:.5px}
   .sub{color:var(--muted);font-size:13px;margin-top:4px}
   .count{
     color:var(--muted);font-size:13px;border:1px solid var(--line);
-    padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.02);
+    padding:8px 14px;border-radius:999px;background:#ffffff;
   }
   main{max-width:1120px;margin:0 auto;padding:8px 24px}
   .grid{
@@ -47,44 +47,45 @@
     border:1px solid var(--line);border-radius:var(--radius);
     overflow:hidden;display:flex;flex-direction:column;
     transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+    box-shadow:0 2px 10px rgba(15,23,42,.04);
   }
-  .card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.55);box-shadow:0 14px 34px rgba(0,0,0,.45)}
-  .thumb{position:relative;aspect-ratio:16/10;background:#0b0e13;overflow:hidden}
+  .card:hover{transform:translateY(-4px);border-color:rgba(2,132,199,.45);box-shadow:0 14px 30px rgba(15,23,42,.12)}
+  .thumb{position:relative;aspect-ratio:16/10;background:#eef2f7;overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block}
   .thumb .ph{
     position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);
-    background:repeating-linear-gradient(45deg,#0e1219,#0e1219 12px,#121722 12px,#121722 24px);
+    background:repeating-linear-gradient(45deg,#f1f5f9,#f1f5f9 12px,#e8edf3 12px,#e8edf3 24px);
     font-size:13px;gap:8px;text-align:center;padding:18px;
   }
   .badge{
     position:absolute;top:10px;left:10px;font-size:12px;padding:4px 10px;border-radius:999px;
-    background:rgba(13,15,20,.72);border:1px solid var(--line);backdrop-filter:blur(4px);color:#cfe9ff;
+    background:rgba(255,255,255,.92);border:1px solid var(--line);backdrop-filter:blur(4px);color:#334155;
   }
   .body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
   .name{font-size:16px;font-weight:700;line-height:1.35}
   .tags{display:flex;flex-wrap:wrap;gap:8px}
-  .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 9px;border-radius:8px;background:rgba(255,255,255,.02)}
-  .tag.fmt{color:#ffd9a3;border-color:rgba(245,158,11,.4)}
+  .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 9px;border-radius:8px;background:#ffffff}
+  .tag.fmt{color:#b45309;border-color:rgba(217,119,6,.4)}
   .code{font-size:13px;color:var(--muted)}
   .code b{color:var(--accent2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1px}
   .btn{
     margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    text-decoration:none;color:#04121f;font-weight:700;font-size:14px;
-    background:linear-gradient(135deg,var(--accent),#22d3ee);
+    text-decoration:none;color:#ffffff;font-weight:700;font-size:14px;
+    background:linear-gradient(135deg,#0ea5e9,#22d3ee);
     padding:11px 14px;border-radius:10px;transition:filter .15s ease;
   }
-  .btn:hover{filter:brightness(1.08)}
+  .btn:hover{filter:brightness(1.06)}
   footer{
     max-width:1120px;margin:40px auto 0;padding:20px 24px;color:var(--muted);font-size:12.5px;line-height:1.7;
     border-top:1px solid var(--line);
   }
-  footer b{color:#cdd3df}
+  footer b{color:#334155}
 </style>
 </head>
 <body>
   <header>
     <div class="brand">
-      <div class="logo">机</div>
+      <div class="logo"><img src="assets/pig.jpg" alt="机元镜像"/></div>
       <div>
         <h1>三维模型库</h1>
         <div class="sub">机元镜像 · 自动化设备三维模型分享</div>
