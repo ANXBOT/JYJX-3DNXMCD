@@ -75,6 +75,27 @@
     padding:11px 14px;border-radius:10px;transition:filter .15s ease;
   }
   .btn:hover{filter:brightness(1.06)}
+  .follow{max-width:1120px;margin:48px auto 0;padding:0 24px}
+  .follow h2{font-size:20px;text-align:center}
+  .follow-sub{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
+  .qr-grid{
+    display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+    max-width:760px;margin:24px auto 0;
+  }
+  .qr-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    transition:transform .18s ease,box-shadow .18s ease;box-shadow:0 2px 10px rgba(15,23,42,.04);
+  }
+  .qr-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(15,23,42,.10)}
+  .qr-img{background:#ffffff;padding:14px;display:grid;place-items:center}
+  .qr-img img{max-width:100%;max-height:240px;object-fit:contain;display:block}
+  .qr-name{text-align:center;font-size:13.5px;font-weight:600;color:var(--text);padding:0 14px 14px}
+  .qr-banner{
+    max-width:640px;margin:20px auto 0;background:var(--card);
+    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 2px 10px rgba(15,23,42,.04);
+  }
+  .qr-banner img{width:100%;display:block}
   footer{
     max-width:1120px;margin:40px auto 0;padding:20px 24px;color:var(--muted);font-size:12.5px;line-height:1.7;
     border-top:1px solid var(--line);
@@ -97,6 +118,24 @@
   <main>
     <div class="grid" id="grid"></div>
   </main>
+
+  <section class="follow">
+    <h2>关注我们</h2>
+    <div class="follow-sub">获取更多自动化资源与更新动态</div>
+    <div class="qr-grid">
+      <div class="qr-card">
+        <div class="qr-img"><img src="assets/qr_mp.jpg" alt="微信公众号 自动化资源库" loading="lazy"/></div>
+        <div class="qr-name">微信公众号 · 自动化资源库</div>
+      </div>
+      <div class="qr-card">
+        <div class="qr-img"><img src="assets/qr_douyin.jpg" alt="抖音 机元镜像" loading="lazy"/></div>
+        <div class="qr-name">抖音 · @机元镜像</div>
+      </div>
+    </div>
+    <div class="qr-banner">
+      <img src="assets/qr_wechat_search.jpg" alt="微信搜一搜 机元镜像" loading="lazy"/>
+    </div>
+  </section>
 
   <footer>
     <p><b>版权与免责声明：</b>本页部分三维模型来源于互联网，仅用于学习交流与个人共享，相关权利归原作者所有。如涉及侵权，请联系维护人及时下架。请于下载后 24 小时内删除，由此产生的任何使用后果由使用者自行承担。</p>
