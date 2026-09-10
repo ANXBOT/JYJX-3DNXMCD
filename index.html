@@ -175,16 +175,10 @@
         <div class="name">${m.name}</div>
         <div class="dl">
           <div class="dl-row">
-            <span class="plat">百度网盘</span>
-            <a class="mini-btn" href="${m.url}" target="_blank" rel="noopener">打开下载</a>
-            <span class="code">提取码 <b>${m.code}</b></span>
-          </div>
-          ${m.pan123 ? `
-          <div class="dl-row">
             <span class="plat">123网盘</span>
-            <a class="mini-btn alt" href="${m.pan123.url}" target="_blank" rel="noopener">打开下载</a>
+            <a class="mini-btn" href="${m.pan123.url}" target="_blank" rel="noopener">打开下载</a>
             <span class="code">提取码 <b>${m.pan123.code}</b></span>
-          </div>` : ""}
+          </div>
         </div>
       </div>`;
     grid.appendChild(card);
