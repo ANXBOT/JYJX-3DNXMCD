@@ -75,6 +75,16 @@
   }
   .mini-btn.alt{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#3d2800}
   .mini-btn:hover{filter:brightness(1.06)}
+  .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:28px}
+  .pg{
+    min-width:38px;height:38px;padding:0 12px;border-radius:10px;cursor:pointer;
+    border:1px solid var(--line);background:#ffffff;color:var(--text);
+    font-size:14px;font-family:inherit;transition:all .15s ease;
+  }
+  .pg:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .pg.on{background:linear-gradient(135deg,#0ea5e9,#22d3ee);border-color:transparent;color:#fff;font-weight:700}
+  .pg:disabled{opacity:.45;cursor:not-allowed}
+  .pg-info{font-size:13px;color:var(--muted);margin-left:6px}
   .follow{max-width:1120px;margin:48px auto 0;padding:0 24px}
   .follow h2{font-size:20px;text-align:center}
   .follow-sub{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
@@ -111,6 +121,7 @@
 
   <main>
     <div class="grid" id="grid"></div>
+    <div class="pager" id="pager"></div>
   </main>
 
   <section class="follow">
@@ -156,30 +167,60 @@
     { name:"机器人搬运焊接工作站", fmt:"STEP",
       pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-AXC1H?pwd=rjEl", code:"rjEl" },
       img:"assets/th_robot.jpg" },
+    { name:"机床换刀与加工", fmt:"STEP",
+      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-CK34H?pwd=u4Nh", code:"u4Nh" },
+      img:"" },
   ];
 
   const grid = document.getElementById("grid");
-  models.forEach(m=>{
-    const card = document.createElement("div");
-    card.className = "card";
+  const pager = document.getElementById("pager");
+  const PER_PAGE = 6;
+  const total = Math.max(1, Math.ceil(models.length / PER_PAGE));
+  let page = 1;
+
+  function cardHTML(m){
     const thumb = m.img
       ? `<div class="thumb"><img src="${m.img}" alt="${m.name}" loading="lazy"/></div>`
       : `<div class="thumb"><div class="ph">🖼️<br/>缩略图待补充</div></div>`;
-    card.innerHTML = `
-      ${thumb}
-      <div class="body">
-        <div class="name">${m.name}</div>
-        <div class="dl">
-          <div class="dl-row">
-            <span class="plat">${m.fmt}</span>
-            <a class="mini-btn" href="${m.pan123.url}" target="_blank" rel="noopener">打开下载</a>
-            <span class="code">提取码 <b>${m.pan123.code}</b></span>
+    return `
+      <div class="card">
+        ${thumb}
+        <div class="body">
+          <div class="name">${m.name}</div>
+          <div class="dl">
+            <div class="dl-row">
+              <span class="plat">${m.fmt}</span>
+              <a class="mini-btn" href="${m.pan123.url}" target="_blank" rel="noopener">打开下载</a>
+              <span class="code">提取码 <b>${m.pan123.code}</b></span>
+            </div>
           </div>
         </div>
       </div>`;
-    grid.appendChild(card);
-  });
-  document.getElementById("count").textContent = "共 " + models.length + " 个模型";
+  }
+
+  function render(){
+    const start = (page - 1) * PER_PAGE;
+    const list = models.slice(start, start + PER_PAGE);
+    grid.innerHTML = list.map(cardHTML).join("");
+
+    const nums = [];
+    for(let i=1;i<=total;i++) nums.push(`<button class="pg ${i===page?"on":""}" data-p="${i}">${i}</button>`);
+    pager.innerHTML = `
+      <button class="pg nav" data-p="${page-1}" ${page===1?"disabled":""}>上一页</button>
+      ${nums.join("")}
+      <button class="pg nav" data-p="${page+1}" ${page===total?"disabled":""}>下一页</button>
+      <span class="pg-info">第 ${page} / ${total} 页</span>`;
+    pager.querySelectorAll(".pg").forEach(b=>{
+      b.addEventListener("click",()=>{
+        const p = Number(b.dataset.p);
+        if(!p || p<1 || p>total || p===page) return;
+        page = p; render();
+        document.getElementById("grid").scrollIntoView({behavior:"smooth",block:"start"});
+      });
+    });
+    document.getElementById("count").textContent = "共 " + models.length + " 个模型";
+  }
+  render();
 </script>
 </body>
 </html>
