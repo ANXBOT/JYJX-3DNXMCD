@@ -57,10 +57,6 @@
     background:repeating-linear-gradient(45deg,#f1f5f9,#f1f5f9 12px,#e8edf3 12px,#e8edf3 24px);
     font-size:13px;gap:8px;text-align:center;padding:18px;
   }
-  .badge{
-    position:absolute;top:10px;left:10px;font-size:12px;padding:4px 10px;border-radius:999px;
-    background:rgba(255,255,255,.92);border:1px solid var(--line);backdrop-filter:blur(4px);color:#334155;
-  }
   .body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
   .name{font-size:16px;font-weight:700;line-height:1.35}
   .tags{display:flex;flex-wrap:wrap;gap:8px}
@@ -167,8 +163,8 @@
     const card = document.createElement("div");
     card.className = "card";
     const thumb = m.img
-      ? `<div class="thumb"><span class="badge">${m.fmt}</span><img src="${m.img}" alt="${m.name}" loading="lazy"/></div>`
-      : `<div class="thumb"><span class="badge">${m.fmt}</span><div class="ph">🖼️<br/>缩略图待补充</div></div>`;
+      ? `<div class="thumb"><img src="${m.img}" alt="${m.name}" loading="lazy"/></div>`
+      : `<div class="thumb"><div class="ph">🖼️<br/>缩略图待补充</div></div>`;
     card.innerHTML = `
       ${thumb}
       <div class="body">
