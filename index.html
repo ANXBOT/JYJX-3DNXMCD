@@ -75,6 +75,11 @@
   }
   .mini-btn.alt{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#3d2800}
   .mini-btn:hover{filter:brightness(1.06)}
+  .hint{
+    font-size:12px;line-height:1.5;color:#b45309;
+    background:rgba(245,158,11,.10);border:1px dashed rgba(217,119,6,.35);
+    border-radius:8px;padding:6px 9px;margin-top:2px;
+  }
   .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:28px}
   .pg{
     min-width:38px;height:38px;padding:0 12px;border-radius:10px;cursor:pointer;
@@ -207,6 +212,7 @@
               <a class="mini-btn alt" href="${m.pan123.url}" target="_blank" rel="noopener">打开下载</a>
               <span class="code">提取码 <b>${m.pan123.code}</b></span>
             </div>
+            <div class="hint">💡 登录并转存到自己的网盘后，可不限速免费下载</div>
           </div>
         </div>
       </div>`;
