@@ -138,6 +138,12 @@
     background:rgba(245,158,11,.10);border:1px dashed rgba(217,119,6,.35);
     border-radius:8px;padding:6px 9px;margin-top:2px;
   }
+  .notice{
+    margin-bottom:18px;font-size:13px;line-height:1.7;color:#8a5a00;
+    background:rgba(245,158,11,.10);border:1px dashed rgba(217,119,6,.4);
+    border-radius:12px;padding:12px 16px;
+  }
+  .notice b{color:#b45309}
 
   /* ===== 分页 ===== */
   .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:26px}
@@ -186,7 +192,7 @@
       <div class="logo"><img src="assets/pig.jpg" alt="机元镜像"/></div>
       <div>
         <h1>机元镜像 · 资料库</h1>
-        <div class="sub">自动化设备三维模型 · 常用软件工具分享</div>
+        <div class="sub">自动化三维模型 · 软件工具 · 课程资料</div>
       </div>
     </div>
     <div class="topbar-right">
@@ -198,6 +204,7 @@
       <nav class="tabs">
         <button class="tab on" data-view="models">🧩 三维模型</button>
         <button class="tab" data-view="tools">🛠 软件工具</button>
+        <button class="tab" data-view="courses">📚 课程资料</button>
       </nav>
     </div>
   </div>
@@ -231,6 +238,22 @@
     <div class="table-note">
       💡 <b>123网盘</b>：登录并转存到自己的网盘后，可不限速免费下载。
     </div>
+  </section>
+
+  <!-- ===== 课程资料 ===== -->
+  <section class="view" id="view-courses">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">课程资料</div>
+        <div class="sec-desc">课程、电子书、文档等学习资料，按类目归类，方便按兴趣检索</div>
+      </div>
+      <div class="count" id="count-courses">共 0 项资料</div>
+    </div>
+    <div class="notice">
+      🚧 <b>本节资料整理中</b>：封面、标题与链接稍后补充，敬请期待。整理好的资料会同步到这里。
+    </div>
+    <div class="grid" id="grid-courses"></div>
+    <div class="pager" id="pager-courses"></div>
   </section>
 </main>
 
@@ -295,8 +318,9 @@ const tools = [
     baidu:{ url:"https://pan.baidu.com/s/1xow1tq4PEd4zaadp0cDESQ?pwd=bi66", code:"bi66" },
     pan123:null, note:"[DC2606]" },
   { name:"信捷PLC模拟器V1.0.0", ver:"[Win10 / 11]", img:"",
-    baidu:{ url:"https://pan.baidu.com/s/1YZ_By6c7MMC5vH6SYaeX6A?pwd=bi77", code:"bi77" },
-    pan123:null, note:"[KEY码在抖音、公众号咨询，免费获取]" },
+    baidu:null,
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-bWhpH?pwd=s6vl", code:"s6vl" },
+    note:"[KEY码在抖音、公众号咨询，免费获取]" },
   { name:"同步带选型工具_v2.05", ver:"[Win10 / 11]", img:"",
     baidu:{ url:"https://pan.baidu.com/s/10DYgVryOG_h0W1RUEWaK1A?pwd=bi11", code:"bi11" },
     pan123:null, note:"[关注公众号 同步轮选型工具 免费获取密码]" },
@@ -308,12 +332,22 @@ const tools = [
     pan123:null, note:"[ABB 机器人离线编程与仿真]" },
   { name:"RobotStudio 2026.2", ver:"[Win10 / 11]", img:"",
     baidu:{ url:"https://pan.baidu.com/s/1VnyqmurP1qe28pOAtKdojQ?pwd=bi11", code:"bi11" },
-    pan123:null, note:"[.zip 压缩包版]" },
+    pan123:null, note:"[ABB 机器人离线编程与仿真]" },
+  { name:"RobotStudio 2026复用工具", ver:"", img:"",
+    baidu:null, pan123:null, note:"[待发布]" },
+  { name:"Factory IO2.5.10.rar", ver:"[Win10 / 11]", img:"",
+    baidu:null,
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-Y6cxH", code:"" },
+    note:"[Factory I/O 自动化产线仿真]" },
   { name:"信捷PLC程序增量粘贴工具", ver:"[Win10 / 11]", img:"",
     baidu:{ url:"https://pan.baidu.com/s/1JMkQR4PFm6NrlI6o5KPrrQ?pwd=bi11", code:"bi11" },
     pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-R7NpH?pwd=S974", code:"S974" },
     note:"[信捷PLC程序增量粘贴]" },
 ];
+
+/* 课程资料：待整理。后续按此结构填入即可自动渲染
+   { title:"课程名称", cat:"类目", cover:"assets/cover_xx.jpg", link:"https://...", code:"abcd", note:"备注" } */
+const courses = [];
 
 /* ============ 标签切换（支持 URL hash 深链） ============ */
 const tabs = document.querySelectorAll(".tab");
@@ -328,7 +362,7 @@ window.addEventListener("hashchange",()=>switchView((location.hash||"#models").s
 
 /* ============ 通用分页渲染（支持搜索过滤） ============ */
 let QUERY = "";
-function paginate(gridEl, pagerEl, source, renderCard, perPage, onCount, matchFn){
+function paginate(gridEl, pagerEl, source, renderCard, perPage, onCount, matchFn, emptyHtml){
   let page = 1;
   function filtered(){
     const q = QUERY.trim().toLowerCase();
@@ -341,7 +375,7 @@ function paginate(gridEl, pagerEl, source, renderCard, perPage, onCount, matchFn
     const start = (page-1)*perPage;
     gridEl.innerHTML = list.length
       ? list.slice(start, start+perPage).map(renderCard).join("")
-      : `<div class="empty">没有找到匹配 <b>“${QUERY.trim()}”</b> 的内容<br/><span style="font-size:12.5px">换个关键词试试，或切换上方标签页</span></div>`;
+      : (emptyHtml || `<div class="empty">没有找到匹配 <b>“${QUERY.trim()}”</b> 的内容<br/><span style="font-size:12.5px">换个关键词试试，或切换上方标签页</span></div>`);
     if(total > 1){
       const nums=[];
       for(let i=1;i<=total;i++) nums.push(`<button class="pg ${i===page?"on":""}" data-p="${i}">${i}</button>`);
@@ -400,19 +434,39 @@ function toolCard(t){
   if(t.baidu) rows.push(`<div class="dl-row">
       <span class="plat">百度网盘</span>
       <a class="mini-btn" href="${t.baidu.url}" target="_blank" rel="noopener">打开下载</a>
-      <span class="code">提取码 <b>${t.baidu.code}</b></span></div>`);
+      ${t.baidu.code?`<span class="code">提取码 <b>${t.baidu.code}</b></span>`:""}</div>`);
   if(t.pan123) rows.push(`<div class="dl-row">
       <span class="plat">123网盘</span>
       <a class="mini-btn alt" href="${t.pan123.url}" target="_blank" rel="noopener">打开下载</a>
-      <span class="code">提取码 <b>${t.pan123.code}</b></span></div>`);
+      ${t.pan123.code?`<span class="code">提取码 <b>${t.pan123.code}</b></span>`:""}</div>`);
   return `<div class="card">${thumb}
     <div class="body">
       <div class="name">${t.name}</div>
-      <div class="tags"><span class="tag">${t.ver}</span>${chips.join("")}</div>
+      <div class="tags">${t.ver?`<span class="tag">${t.ver}</span>`:""}${chips.join("")}</div>
       <div class="dl">
-        ${rows.join("")}
+        ${rows.length?rows.join(""):`<div class="dl-row"><span class="plat">获取资源</span><span class="code">[链接待补充]</span></div>`}
         ${t.pan123?`<div class="hint">💡 123网盘：登录并转存到自己的网盘后，可不限速免费下载</div>`:""}
         ${t.note?`<div class="note">${t.note}</div>`:""}
+      </div>
+    </div></div>`;
+}
+
+/* ============ 课程资料卡片 ============ */
+function courseCard(c){
+  const cover = c.cover
+    ? `<div class="thumb soft"><img src="${c.cover}" alt="${c.title}" loading="lazy"/></div>`
+    : `<div class="thumb"><div class="ph">📘<br/>封面待补充</div></div>`;
+  return `<div class="card">${cover}
+    <div class="body">
+      <div class="name">${c.title||"[待补充]"}</div>
+      <div class="tags"><span class="tag">类目：${c.cat||"待补充"}</span></div>
+      <div class="dl">
+        ${c.link?`<div class="dl-row">
+          <span class="plat">获取资料</span>
+          <a class="mini-btn" href="${c.link}" target="_blank" rel="noopener">打开链接</a>
+          ${c.code?`<span class="code">提取码 <b>${c.code}</b></span>`:""}</div>`
+         :`<div class="dl-row"><span class="plat">获取资料</span><span class="code">[链接待补充]</span></div>`}
+        ${c.note?`<div class="note">${c.note}</div>`:""}
       </div>
     </div></div>`;
 }
@@ -441,6 +495,17 @@ renderers.push(paginate(
     const hay = [t.name, t.ver, t.note||"", t.baidu?"百度网盘":"", t.pan123?"123网盘":""].join(" ").toLowerCase();
     return hay.includes(q);
   }
+));
+renderers.push(paginate(
+  document.getElementById("grid-courses"),
+  document.getElementById("pager-courses"),
+  courses, courseCard, 6,
+  (m,total)=>{
+    const el = document.getElementById("count-courses");
+    el.textContent = m===total ? "共 " + m + " 项资料" : "匹配 " + m + " / " + total + " 项资料";
+  },
+  (c,q)=> [c.title||"", c.cat||"", c.note||""].join(" ").toLowerCase().includes(q),
+  `<div class="empty">🚧 <b>课程资料整理中</b><br/><span style="font-size:12.5px">课程、电子书、技术文档正在陆续上架，关注抖音 @机元镜像 或公众号「自动化资源库」第一时间获取更新</span></div>`
 ));
 
 /* ============ 搜索交互 ============ */
