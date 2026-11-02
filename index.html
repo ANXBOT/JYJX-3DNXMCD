@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>机元镜像 · 三维模型库</title>
+<title>机元镜像 · 资料库</title>
 <style>
   :root{
     --bg:#f7f8fb; --bg2:#eef1f6; --card:#ffffff; --card2:#fbfcfe;
@@ -20,28 +20,79 @@
       linear-gradient(180deg,#ffffff,var(--bg2));
     min-height:100vh; padding:0 0 56px;
   }
-  header{
-    max-width:1120px; margin:0 auto; padding:48px 24px 28px;
-    display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap;
+
+  /* ===== 顶部导航（吸顶） ===== */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.90);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
   }
-  .brand{display:flex; align-items:center; gap:14px}
+  .topbar-inner{
+    max-width:1120px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
   .logo{
-    width:46px;height:46px;border-radius:12px;flex:none;overflow:hidden;
-    background:#fff;border:1px solid var(--line);
-    box-shadow:0 4px 14px rgba(15,23,42,.10);
+    width:44px;height:44px;border-radius:12px;flex:none;overflow:hidden;
+    background:#fff;border:1px solid var(--line);box-shadow:0 4px 14px rgba(15,23,42,.10);
   }
   .logo img{width:100%;height:100%;object-fit:cover;display:block}
-  h1{font-size:26px;letter-spacing:.5px}
-  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .brand h1{font-size:19px;letter-spacing:.4px;line-height:1.2}
+  .brand .sub{color:var(--muted);font-size:12.5px;margin-top:3px}
+
+  .tabs{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:#eef2f7;border:1px solid var(--line)}
+  .tab{
+    border:none;background:transparent;cursor:pointer;font-family:inherit;
+    font-size:14px;font-weight:600;color:var(--muted);
+    padding:9px 22px;border-radius:999px;transition:all .18s ease;
+  }
+  .tab:hover{color:var(--text)}
+  .tab.on{background:linear-gradient(135deg,#0ea5e9,#22d3ee);color:#fff;box-shadow:0 4px 12px rgba(14,165,233,.32)}
+
+  /* ===== 搜索 ===== */
+  .topbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .search{position:relative;display:flex;align-items:center}
+  .search .ico{position:absolute;left:13px;font-size:13px;color:var(--muted);pointer-events:none}
+  .search input{
+    width:210px;height:38px;border-radius:999px;border:1px solid var(--line);
+    background:#fff;padding:0 34px 0 34px;font-size:13.5px;font-family:inherit;color:var(--text);
+    transition:box-shadow .15s ease,border-color .15s ease,width .2s ease;
+  }
+  .search input::placeholder{color:#9aa4b8}
+  .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(2,132,199,.12);width:240px}
+  .search .clear{
+    position:absolute;right:9px;width:19px;height:19px;border:none;border-radius:50%;
+    background:#e8edf5;color:var(--muted);font-size:12px;line-height:19px;text-align:center;
+    cursor:pointer;display:none;padding:0;
+  }
+  .search .clear:hover{background:#dbe2ee;color:var(--text)}
+  .search.has .clear{display:block}
+
+  .empty{
+    grid-column:1/-1;text-align:center;color:var(--muted);
+    padding:54px 20px;font-size:14px;background:#fff;border:1px dashed var(--line);border-radius:var(--radius);
+  }
+  .empty b{color:var(--text)}
+
+  main{max-width:1120px;margin:0 auto;padding:26px 24px 0}
+
+  /* ===== 区块标题 ===== */
+  .sec-head{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px;
+  }
+  .sec-title{font-size:22px;font-weight:800;letter-spacing:.4px}
+  .sec-desc{color:var(--muted);font-size:13px;margin-top:5px}
   .count{
     color:var(--muted);font-size:13px;border:1px solid var(--line);
-    padding:8px 14px;border-radius:999px;background:#ffffff;
+    padding:7px 14px;border-radius:999px;background:#fff;flex:none;
   }
-  main{max-width:1120px;margin:0 auto;padding:8px 24px}
-  .grid{
-    display:grid;gap:20px;
-    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-  }
+
+  .view{display:none;animation:fade .25s ease}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ===== 卡片（模型 / 工具共用） ===== */
+  .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
   .card{
     background:linear-gradient(180deg,var(--card),var(--card2));
     border:1px solid var(--line);border-radius:var(--radius);
@@ -52,6 +103,9 @@
   .card:hover{transform:translateY(-4px);border-color:rgba(2,132,199,.45);box-shadow:0 14px 30px rgba(15,23,42,.12)}
   .thumb{position:relative;aspect-ratio:16/10;background:#eef2f7;overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  /* 软件截图用 contain，避免裁掉界面 */
+  .thumb.soft{background:#f4f6fa;padding:10px}
+  .thumb.soft img{object-fit:contain}
   .thumb .ph{
     position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);
     background:repeating-linear-gradient(45deg,#f1f5f9,#f1f5f9 12px,#e8edf3 12px,#e8edf3 24px);
@@ -60,187 +114,352 @@
   .body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
   .name{font-size:16px;font-weight:700;line-height:1.35}
   .tags{display:flex;flex-wrap:wrap;gap:8px}
-  .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 9px;border-radius:8px;background:#ffffff}
+  .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 9px;border-radius:8px;background:#fff}
   .tag.fmt{color:#b45309;border-color:rgba(217,119,6,.4)}
-  .code{font-size:13px;color:var(--muted);flex:none}
-  .code b{color:var(--accent2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1px}
+  .chip{display:inline-flex;align-items:center;font-size:12px;padding:3px 9px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--muted)}
+  .chip.bd{color:#2563eb;border-color:rgba(37,99,235,.35);background:rgba(37,99,235,.06)}
+  .chip.p3{color:#b45309;border-color:rgba(217,119,6,.4);background:rgba(245,158,11,.08)}
+  .note{font-size:12.5px;line-height:1.6;color:var(--muted)}
   .dl{display:flex;flex-direction:column;gap:8px;margin-top:auto}
   .dl-row{display:flex;align-items:center;gap:8px}
   .plat{font-size:12.5px;color:var(--muted);width:58px;flex:none}
   .mini-btn{
     flex:1;display:inline-flex;align-items:center;justify-content:center;
-    text-decoration:none;color:#ffffff;font-weight:700;font-size:13px;
+    text-decoration:none;color:#fff;font-weight:700;font-size:13px;
     background:linear-gradient(135deg,#0ea5e9,#22d3ee);
-    padding:9px 10px;border-radius:9px;transition:filter .15s ease;
+    padding:9px 10px;border-radius:9px;transition:filter .15s ease;white-space:nowrap;
   }
   .mini-btn.alt{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#3d2800}
   .mini-btn:hover{filter:brightness(1.06)}
+  .code{font-size:13px;color:var(--muted);flex:none}
+  .code b{color:var(--accent2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1px}
   .hint{
     font-size:12px;line-height:1.5;color:#b45309;
     background:rgba(245,158,11,.10);border:1px dashed rgba(217,119,6,.35);
     border-radius:8px;padding:6px 9px;margin-top:2px;
   }
-  .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:28px}
+
+  /* ===== 分页 ===== */
+  .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:26px}
   .pg{
     min-width:38px;height:38px;padding:0 12px;border-radius:10px;cursor:pointer;
-    border:1px solid var(--line);background:#ffffff;color:var(--text);
+    border:1px solid var(--line);background:#fff;color:var(--text);
     font-size:14px;font-family:inherit;transition:all .15s ease;
   }
   .pg:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
   .pg.on{background:linear-gradient(135deg,#0ea5e9,#22d3ee);border-color:transparent;color:#fff;font-weight:700}
   .pg:disabled{opacity:.45;cursor:not-allowed}
   .pg-info{font-size:13px;color:var(--muted);margin-left:6px}
-  .follow{max-width:1120px;margin:48px auto 0;padding:0 24px}
+
+  /* ===== 关注我们 ===== */
+  .follow{max-width:1120px;margin:46px auto 0;padding:0 24px}
   .follow h2{font-size:20px;text-align:center}
   .follow-sub{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
-  .qr-grid{
-    display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-    margin:24px 0 0;
-  }
+  .qr-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin:24px 0 0}
   .qr-card{
-    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
     transition:transform .18s ease,box-shadow .18s ease;box-shadow:0 2px 10px rgba(15,23,42,.04);
   }
   .qr-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(15,23,42,.10)}
-  .qr-img{background:#ffffff;padding:14px;display:grid;place-items:center}
+  .qr-img{background:#fff;padding:14px;display:grid;place-items:center}
   .qr-img img{max-width:100%;max-height:190px;object-fit:contain;display:block}
   .qr-name{text-align:center;font-size:13.5px;font-weight:600;color:var(--text);padding:0 14px 14px}
+
   footer{
     max-width:1120px;margin:40px auto 0;padding:20px 24px;color:var(--muted);font-size:12.5px;line-height:1.7;
     border-top:1px solid var(--line);
   }
   footer b{color:#334155}
+  @media (max-width:640px){
+    .topbar-inner{padding:12px 16px}
+    .brand h1{font-size:17px}
+    .tab{padding:8px 16px;font-size:13px}
+    main{padding:20px 16px 0}
+  }
 </style>
 </head>
 <body>
-  <header>
+
+<div class="topbar">
+  <div class="topbar-inner">
     <div class="brand">
       <div class="logo"><img src="assets/pig.jpg" alt="机元镜像"/></div>
       <div>
-        <h1>三维模型库</h1>
-        <div class="sub">机元镜像 · 自动化设备三维模型分享</div>
+        <h1>机元镜像 · 资料库</h1>
+        <div class="sub">自动化设备三维模型 · 常用软件工具分享</div>
       </div>
     </div>
-    <div class="count" id="count">共 6 个模型</div>
-  </header>
-
-  <main>
-    <div class="grid" id="grid"></div>
-    <div class="pager" id="pager"></div>
-  </main>
-
-  <section class="follow">
-    <h2>关注我们</h2>
-    <div class="follow-sub">获取更多自动化资源与更新动态</div>
-    <div class="qr-grid">
-      <div class="qr-card">
-        <div class="qr-img"><img src="assets/qr_mp.jpg" alt="微信公众号 自动化资源库" loading="lazy"/></div>
-        <div class="qr-name">微信公众号 · 自动化资源库</div>
+    <div class="topbar-right">
+      <div class="search" id="search">
+        <span class="ico">🔍</span>
+        <input id="search-input" type="search" placeholder="搜索模型 / 软件" autocomplete="off"/>
+        <button class="clear" id="search-clear" title="清空">✕</button>
       </div>
-      <div class="qr-card">
-        <div class="qr-img"><img src="assets/qr_douyin.jpg" alt="抖音 机元镜像" loading="lazy"/></div>
-        <div class="qr-name">抖音 · @机元镜像</div>
-      </div>
-      <div class="qr-card">
-        <div class="qr-img"><img src="assets/qr_wechat_search.jpg" alt="微信搜一搜 机元镜像" loading="lazy"/></div>
-        <div class="qr-name">微信搜一搜 · 机元镜像</div>
-      </div>
+      <nav class="tabs">
+        <button class="tab on" data-view="models">🧩 三维模型</button>
+        <button class="tab" data-view="tools">🛠 软件工具</button>
+      </nav>
     </div>
+  </div>
+</div>
+
+<main>
+  <!-- ===== 三维模型 ===== -->
+  <section class="view on" id="view-models">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">三维模型</div>
+        <div class="sec-desc">可直接用于数字孪生 / 虚拟调试的自动化设备模型</div>
+      </div>
+      <div class="count" id="count-models">共 0 个模型</div>
+    </div>
+    <div class="grid" id="grid-models"></div>
+    <div class="pager" id="pager-models"></div>
   </section>
 
-  <footer>
-    <p><b>版权与免责声明：</b>本页部分三维模型来源于互联网，仅用于学习交流与个人共享，相关权利归原作者所有。如涉及侵权，请联系维护人及时下架。请于下载后 24 小时内删除，由此产生的任何使用后果由使用者自行承担。</p>
-  </footer>
+  <!-- ===== 软件工具 ===== -->
+  <section class="view" id="view-tools">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">软件工具</div>
+        <div class="sec-desc">常用软件、插件、便携版工具等</div>
+      </div>
+      <div class="count" id="count-tools">共 0 个软件</div>
+    </div>
+    <div class="grid" id="grid-tools"></div>
+    <div class="pager" id="pager-tools"></div>
+    <div class="table-note">
+      💡 <b>123网盘</b>：登录并转存到自己的网盘后，可不限速免费下载。
+    </div>
+  </section>
+</main>
+
+<section class="follow">
+  <h2>关注我们</h2>
+  <div class="follow-sub">获取更多自动化资源与更新动态</div>
+  <div class="qr-grid">
+    <div class="qr-card">
+      <div class="qr-img"><img src="assets/qr_mp.jpg" alt="微信公众号 自动化资源库" loading="lazy"/></div>
+      <div class="qr-name">微信公众号 · 自动化资源库</div>
+    </div>
+    <div class="qr-card">
+      <div class="qr-img"><img src="assets/qr_douyin.jpg" alt="抖音 机元镜像" loading="lazy"/></div>
+      <div class="qr-name">抖音 · @机元镜像</div>
+    </div>
+    <div class="qr-card">
+      <div class="qr-img"><img src="assets/qr_wechat_search.jpg" alt="微信搜一搜 机元镜像" loading="lazy"/></div>
+      <div class="qr-name">微信搜一搜 · 机元镜像</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><b>版权与免责声明：</b>本页部分三维模型与软件来源于互联网，仅用于学习交流与个人共享，相关权利归原作者所有。如涉及侵权，请联系维护人及时下架。请于下载后 24 小时内删除，由此产生的任何使用后果由使用者自行承担。</p>
+</footer>
 
 <script>
-  const models = [
-    { name:"电池自动焊锡设备", fmt:"STEP", code:"bi33",
-      url:"https://pan.baidu.com/s/17XPuTToQvsIJGyHswVGiJw?pwd=bi33",
-      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-9XC1H?pwd=6CGj", code:"6CGj" },
-      img:"assets/th1.jpg" },
-    { name:"电池包检测自动上下料", fmt:"STEP", code:"bi22",
-      url:"https://pan.baidu.com/s/1cYYgjNgMh67li1Ish6fBhg?pwd=bi22",
-      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-tzq1H?pwd=mhXT", code:"mhXT" },
-      img:"assets/th2.jpg" },
-    { name:"智能分拣设备", fmt:"STEP", code:"bi11",
-      url:"https://pan.baidu.com/s/1cOmCpZeYMgmpR4RhVywxSg?pwd=bi11",
-      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-1qoxH?pwd=AS22", code:"AS22" },
-      img:"assets/th3.jpg" },
-    { name:"小球自动装罐机", fmt:"STEP", code:"bi11",
-      url:"https://pan.baidu.com/s/1kzv5DyBhQAwBsHHyd_Fa_w?pwd=bi11",
-      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-WK34H?pwd=AS33", code:"AS33" },
-      img:"assets/th_ball_can.jpg" },
-    { name:"小球凸轮搬运", fmt:"STEP", code:"bi11",
-      url:"https://pan.baidu.com/s/1vkaHbW3eT7SaYGDwMbqE4Q?pwd=bi11",
-      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-haB4H?pwd=LbLj", code:"LbLj" },
-      img:"assets/th_ball_cam.jpg" },
-    { name:"机器人搬运焊接工作站", fmt:"STEP", code:"bi11",
-      url:"https://pan.baidu.com/s/14wd2DAzpoN_8pT45zaLzPw?pwd=bi11",
-      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-AXC1H?pwd=rjEl", code:"rjEl" },
-      img:"assets/th_robot.jpg" },
-    { name:"机床换刀与加工", fmt:"STEP", code:"",
-      url:"",
-      pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-CK34H?pwd=u4Nh", code:"u4Nh" },
-      img:"assets/th_machine.jpg" },
-  ];
+/* ============ 数据 ============ */
+const models = [
+  { name:"电池自动焊锡设备", fmt:"STEP", code:"bi33",
+    url:"https://pan.baidu.com/s/17XPuTToQvsIJGyHswVGiJw?pwd=bi33",
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-9XC1H?pwd=6CGj", code:"6CGj" },
+    img:"assets/th1.jpg" },
+  { name:"电池包检测自动上下料", fmt:"STEP", code:"bi22",
+    url:"https://pan.baidu.com/s/1cYYgjNgMh67li1Ish6fBhg?pwd=bi22",
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-tzq1H?pwd=mhXT", code:"mhXT" },
+    img:"assets/th2.jpg" },
+  { name:"智能分拣设备", fmt:"STEP", code:"bi11",
+    url:"https://pan.baidu.com/s/1cOmCpZeYMgmpR4RhVywxSg?pwd=bi11",
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-1qoxH?pwd=AS22", code:"AS22" },
+    img:"assets/th3.jpg" },
+  { name:"小球自动装罐机", fmt:"STEP", code:"bi11",
+    url:"https://pan.baidu.com/s/1kzv5DyBhQAwBsHHyd_Fa_w?pwd=bi11",
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-WK34H?pwd=AS33", code:"AS33" },
+    img:"assets/th_ball_can.jpg" },
+  { name:"小球凸轮搬运", fmt:"STEP", code:"bi11",
+    url:"https://pan.baidu.com/s/1vkaHbW3eT7SaYGDwMbqE4Q?pwd=bi11",
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-haB4H?pwd=LbLj", code:"LbLj" },
+    img:"assets/th_ball_cam.jpg" },
+  { name:"机器人搬运焊接工作站", fmt:"STEP", code:"bi11",
+    url:"https://pan.baidu.com/s/14wd2DAzpoN_8pT45zaLzPw?pwd=bi11",
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-AXC1H?pwd=rjEl", code:"rjEl" },
+    img:"assets/th_robot.jpg" },
+  { name:"机床换刀与加工", fmt:"STEP", code:"",
+    url:"",
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-CK34H?pwd=u4Nh", code:"u4Nh" },
+    img:"assets/th_machine.jpg" },
+];
 
-  const grid = document.getElementById("grid");
-  const pager = document.getElementById("pager");
-  const PER_PAGE = 6;
-  const total = Math.max(1, Math.ceil(models.length / PER_PAGE));
+const tools = [
+  { name:"NX（NXMCD）", ver:"[Win10 / 11]", img:"",
+    baidu:{ url:"https://pan.baidu.com/s/1xow1tq4PEd4zaadp0cDESQ?pwd=bi66", code:"bi66" },
+    pan123:null, note:"[DC2606]" },
+  { name:"信捷PLC模拟器V1.0.0", ver:"[Win10 / 11]", img:"",
+    baidu:{ url:"https://pan.baidu.com/s/1YZ_By6c7MMC5vH6SYaeX6A?pwd=bi77", code:"bi77" },
+    pan123:null, note:"[KEY码在抖音、公众号咨询，免费获取]" },
+  { name:"同步带选型工具_v2.05", ver:"[Win10 / 11]", img:"",
+    baidu:{ url:"https://pan.baidu.com/s/10DYgVryOG_h0W1RUEWaK1A?pwd=bi11", code:"bi11" },
+    pan123:null, note:"[关注公众号 同步轮选型工具 免费获取密码]" },
+  { name:"ANSYS 2026 R1", ver:"/", img:"",
+    baidu:{ url:"https://pan.baidu.com/s/1M4_OxSlVDljotOW8kTI67Q?pwd=bi11", code:"bi11" },
+    pan123:null, note:"[来自互联网收集，安装实测可用]" },
+  { name:"RobotStudio 2025", ver:"[Win10 / 11]", img:"",
+    baidu:{ url:"https://pan.baidu.com/s/1bZ38CiqKu3B1YmSnWAklRQ?pwd=bi11", code:"bi11" },
+    pan123:null, note:"[ABB 机器人离线编程与仿真]" },
+  { name:"RobotStudio 2026.2", ver:"[Win10 / 11]", img:"",
+    baidu:{ url:"https://pan.baidu.com/s/1VnyqmurP1qe28pOAtKdojQ?pwd=bi11", code:"bi11" },
+    pan123:null, note:"[.zip 压缩包版]" },
+  { name:"信捷PLC程序增量粘贴工具", ver:"[Win10 / 11]", img:"",
+    baidu:{ url:"https://pan.baidu.com/s/1JMkQR4PFm6NrlI6o5KPrrQ?pwd=bi11", code:"bi11" },
+    pan123:{ url:"https://1860092132.share.123pan.cn/123pan/T6lzvd-R7NpH?pwd=S974", code:"S974" },
+    note:"[信捷PLC程序增量粘贴]" },
+];
+
+/* ============ 标签切换（支持 URL hash 深链） ============ */
+const tabs = document.querySelectorAll(".tab");
+const views = document.querySelectorAll(".view");
+function switchView(name, push){
+  tabs.forEach(t=>t.classList.toggle("on", t.dataset.view===name));
+  views.forEach(v=>v.classList.toggle("on", v.id==="view-"+name));
+  if(push && location.hash!=="#"+name) history.replaceState(null,"","#"+name);
+}
+tabs.forEach(t=>t.addEventListener("click",()=>switchView(t.dataset.view,true)));
+window.addEventListener("hashchange",()=>switchView((location.hash||"#models").slice(1) || "models", false));
+
+/* ============ 通用分页渲染（支持搜索过滤） ============ */
+let QUERY = "";
+function paginate(gridEl, pagerEl, source, renderCard, perPage, onCount, matchFn){
   let page = 1;
-
-  function cardHTML(m){
-    const thumb = m.img
-      ? `<div class="thumb"><img src="${m.img}" alt="${m.name}" loading="lazy"/></div>`
-      : `<div class="thumb"><div class="ph">🖼️<br/>缩略图待补充</div></div>`;
-    return `
-      <div class="card">
-        ${thumb}
-        <div class="body">
-          <div class="name">${m.name}</div>
-          <div class="tags"><span class="tag fmt">${m.fmt}</span></div>
-          <div class="dl">
-            ${m.url ? `
-            <div class="dl-row">
-              <span class="plat">百度网盘</span>
-              <a class="mini-btn" href="${m.url}" target="_blank" rel="noopener">打开下载</a>
-              <span class="code">提取码 <b>${m.code}</b></span>
-            </div>` : ""}
-            <div class="dl-row">
-              <span class="plat">123网盘</span>
-              <a class="mini-btn alt" href="${m.pan123.url}" target="_blank" rel="noopener">打开下载</a>
-              <span class="code">提取码 <b>${m.pan123.code}</b></span>
-            </div>
-            <div class="hint">💡 123网盘：登录并转存到自己的网盘后，可不限速免费下载</div>
-          </div>
-        </div>
-      </div>`;
+  function filtered(){
+    const q = QUERY.trim().toLowerCase();
+    return q ? source.filter(x=>matchFn(x,q)) : source.slice();
   }
-
   function render(){
-    const start = (page - 1) * PER_PAGE;
-    const list = models.slice(start, start + PER_PAGE);
-    grid.innerHTML = list.map(cardHTML).join("");
-
-    const nums = [];
-    for(let i=1;i<=total;i++) nums.push(`<button class="pg ${i===page?"on":""}" data-p="${i}">${i}</button>`);
-    pager.innerHTML = `
-      <button class="pg nav" data-p="${page-1}" ${page===1?"disabled":""}>上一页</button>
-      ${nums.join("")}
-      <button class="pg nav" data-p="${page+1}" ${page===total?"disabled":""}>下一页</button>
-      <span class="pg-info">第 ${page} / ${total} 页</span>`;
-    pager.querySelectorAll(".pg").forEach(b=>{
-      b.addEventListener("click",()=>{
-        const p = Number(b.dataset.p);
-        if(!p || p<1 || p>total || p===page) return;
-        page = p; render();
-        document.getElementById("grid").scrollIntoView({behavior:"smooth",block:"start"});
-      });
-    });
-    document.getElementById("count").textContent = "共 " + models.length + " 个模型";
+    const list = filtered();
+    const total = Math.max(1, Math.ceil(list.length/perPage));
+    if(page>total) page = total;
+    const start = (page-1)*perPage;
+    gridEl.innerHTML = list.length
+      ? list.slice(start, start+perPage).map(renderCard).join("")
+      : `<div class="empty">没有找到匹配 <b>“${QUERY.trim()}”</b> 的内容<br/><span style="font-size:12.5px">换个关键词试试，或切换上方标签页</span></div>`;
+    if(total > 1){
+      const nums=[];
+      for(let i=1;i<=total;i++) nums.push(`<button class="pg ${i===page?"on":""}" data-p="${i}">${i}</button>`);
+      pagerEl.innerHTML = `
+        <button class="pg" data-p="${page-1}" ${page===1?"disabled":""}>上一页</button>
+        ${nums.join("")}
+        <button class="pg" data-p="${page+1}" ${page===total?"disabled":""}>下一页</button>
+        <span class="pg-info">第 ${page} / ${total} 页</span>`;
+      pagerEl.querySelectorAll(".pg").forEach(b=>b.addEventListener("click",()=>{
+        const p=Number(b.dataset.p);
+        if(!p||p<1||p>total||p===page) return;
+        page=p; render();
+        gridEl.scrollIntoView({behavior:"smooth",block:"start"});
+      }));
+    } else {
+      pagerEl.innerHTML = "";
+    }
+    if(onCount) onCount(list.length, source.length);
   }
   render();
+  return { render };
+}
+
+/* ============ 三维模型卡片 ============ */
+function modelCard(m){
+  const thumb = m.img
+    ? `<div class="thumb"><img src="${m.img}" alt="${m.name}" loading="lazy"/></div>`
+    : `<div class="thumb"><div class="ph">🖼️<br/>缩略图待补充</div></div>`;
+  return `<div class="card">${thumb}
+    <div class="body">
+      <div class="name">${m.name}</div>
+      <div class="tags"><span class="tag fmt">${m.fmt}</span></div>
+      <div class="dl">
+        ${m.url ? `<div class="dl-row">
+          <span class="plat">百度网盘</span>
+          <a class="mini-btn" href="${m.url}" target="_blank" rel="noopener">打开下载</a>
+          <span class="code">提取码 <b>${m.code}</b></span></div>` : ""}
+        <div class="dl-row">
+          <span class="plat">123网盘</span>
+          <a class="mini-btn alt" href="${m.pan123.url}" target="_blank" rel="noopener">打开下载</a>
+          <span class="code">提取码 <b>${m.pan123.code}</b></span></div>
+        <div class="hint">💡 123网盘：登录并转存到自己的网盘后，可不限速免费下载</div>
+      </div>
+    </div></div>`;
+}
+
+/* ============ 软件工具卡片 ============ */
+function toolCard(t){
+  const thumb = t.img
+    ? `<div class="thumb soft"><img src="${t.img}" alt="${t.name}" loading="lazy"/></div>`
+    : `<div class="thumb"><div class="ph">🖥️<br/>软件截图待补充</div></div>`;
+  const chips = [];
+  if(t.baidu) chips.push(`<span class="chip bd">百度网盘</span>`);
+  if(t.pan123) chips.push(`<span class="chip p3">123网盘</span>`);
+  const rows = [];
+  if(t.baidu) rows.push(`<div class="dl-row">
+      <span class="plat">百度网盘</span>
+      <a class="mini-btn" href="${t.baidu.url}" target="_blank" rel="noopener">打开下载</a>
+      <span class="code">提取码 <b>${t.baidu.code}</b></span></div>`);
+  if(t.pan123) rows.push(`<div class="dl-row">
+      <span class="plat">123网盘</span>
+      <a class="mini-btn alt" href="${t.pan123.url}" target="_blank" rel="noopener">打开下载</a>
+      <span class="code">提取码 <b>${t.pan123.code}</b></span></div>`);
+  return `<div class="card">${thumb}
+    <div class="body">
+      <div class="name">${t.name}</div>
+      <div class="tags"><span class="tag">${t.ver}</span>${chips.join("")}</div>
+      <div class="dl">
+        ${rows.join("")}
+        ${t.pan123?`<div class="hint">💡 123网盘：登录并转存到自己的网盘后，可不限速免费下载</div>`:""}
+        ${t.note?`<div class="note">${t.note}</div>`:""}
+      </div>
+    </div></div>`;
+}
+
+/* ============ 渲染 ============ */
+const renderers = [];
+renderers.push(paginate(
+  document.getElementById("grid-models"),
+  document.getElementById("pager-models"),
+  models, modelCard, 6,
+  (m,total)=>{
+    const el = document.getElementById("count-models");
+    el.textContent = m===total ? "共 " + m + " 个模型" : "匹配 " + m + " / " + total + " 个模型";
+  },
+  (m,q)=> (m.name+" "+m.fmt+" "+m.pan123.code).toLowerCase().includes(q)
+));
+renderers.push(paginate(
+  document.getElementById("grid-tools"),
+  document.getElementById("pager-tools"),
+  tools, toolCard, 6,
+  (m,total)=>{
+    const el = document.getElementById("count-tools");
+    el.textContent = m===total ? "共 " + m + " 个软件" : "匹配 " + m + " / " + total + " 个软件";
+  },
+  (t,q)=> {
+    const hay = [t.name, t.ver, t.note||"", t.baidu?"百度网盘":"", t.pan123?"123网盘":""].join(" ").toLowerCase();
+    return hay.includes(q);
+  }
+));
+
+/* ============ 搜索交互 ============ */
+const searchWrap = document.getElementById("search");
+const searchInput = document.getElementById("search-input");
+const searchClear = document.getElementById("search-clear");
+function applyQuery(){
+  QUERY = searchInput.value || "";
+  searchWrap.classList.toggle("has", !!QUERY.trim());
+  renderers.forEach(r=>r.render());
+}
+searchInput.addEventListener("input", applyQuery);
+searchClear.addEventListener("click", ()=>{ searchInput.value=""; applyQuery(); searchInput.focus(); });
+document.addEventListener("keydown", e=>{
+  if(e.key === "/" && document.activeElement !== searchInput){ e.preventDefault(); searchInput.focus(); }
+  else if(e.key === "Escape" && document.activeElement === searchInput){ searchInput.value=""; applyQuery(); }
+});
+
+switchView((location.hash||"#models").slice(1) || "models", false);
 </script>
 </body>
 </html>
